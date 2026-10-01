@@ -43,14 +43,14 @@ main{padding-top:78px}
 em{font-style:italic;color:#caa26b}
 
 .hero{
- min-height:calc(100svh - 78px);display:grid;grid-template-columns:1.03fr .97fr;
+ min-height:calc(100svh - 78px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
  border-bottom:1px solid var(--line)
 }
 .hero-media{min-height:calc(100svh - 78px);overflow:hidden;position:relative}
 .hero-media img{width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.015)}
 .hero-media:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(23,19,15,.05),transparent 35%,rgba(23,19,15,.12))}
-.hero-copy{display:flex;flex-direction:column;justify-content:center;padding:8vw 7vw 7vw 6vw;order:-1}
-.hero-copy h1{font-size:clamp(72px,8vw,142px);margin:18px 0 25px}
+.hero-copy{display:flex;flex-direction:column;justify-content:center;padding:clamp(70px,8vw,120px) clamp(28px,6vw,90px);order:-1}
+.hero-copy h1{font-size:clamp(64px,7vw,120px);margin:18px 0 25px;max-width:720px}
 .hero-copy .lead{max-width:470px;color:rgba(242,231,211,.67);line-height:1.8;font-size:15px}
 .actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border:1px solid rgba(199,155,92,.65);font-size:10px;letter-spacing:.16em;text-transform:uppercase;transition:.25s}
@@ -142,6 +142,57 @@ footer p{color:rgba(242,231,211,.5);font-size:12px}
 
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
 .reveal.show{opacity:1;transform:none}
+
+/* Mobile-first safety: also handles Android Chrome "Desktop site" mode. */
+.mobile-device .site-header{height:68px;padding:0 18px}
+.mobile-device .brand{width:48px;height:48px}
+.mobile-device .nav{display:none}
+.mobile-device .menu-btn{display:block}
+.mobile-device main{padding-top:68px}
+.mobile-device .hero{display:flex;flex-direction:column;min-height:auto}
+.mobile-device .hero-copy{order:1;padding:58px 22px 65px}
+.mobile-device .hero-media{order:2;height:auto;min-height:0;aspect-ratio:4/5}
+.mobile-device .hero-media img{height:100%;object-fit:cover}
+.mobile-device .hero-copy h1{font-size:clamp(58px,17vw,82px);max-width:none}
+.mobile-device .hero-copy .lead{font-size:13px}
+.mobile-device .hero-note{margin-top:35px}
+.mobile-device .manifesto{padding:90px 22px}
+.mobile-device .manifesto h2{font-size:65px}
+.mobile-device .split{grid-template-columns:1fr;min-height:auto}
+.mobile-device .split-media{height:auto;aspect-ratio:4/5;min-height:0}
+.mobile-device .split-copy{padding:75px 22px}
+.mobile-device .split-copy h2{font-size:72px}
+.mobile-device .ingredients{padding:80px 22px}
+.mobile-device .ingredients-head{display:block}
+.mobile-device .ingredients-head p{margin-top:25px}
+.mobile-device .ingredients-photo{height:auto;aspect-ratio:4/5;min-height:0}
+.mobile-device .products{padding:80px 22px}
+.mobile-device .products-head{display:block}
+.mobile-device .products-head p{margin-top:25px}
+.mobile-device .product,.mobile-device .product.reverse{grid-template-columns:1fr;min-height:auto}
+.mobile-device .product.reverse .product-media{order:0}
+.mobile-device .product.reverse .product-info{order:1}
+.mobile-device .product-media{height:auto;aspect-ratio:4/5;min-height:0}
+.mobile-device .product-info{padding:65px 0 80px}
+.mobile-device .product-info h3{font-size:72px}
+.mobile-device .menu-section{padding:80px 22px}
+.mobile-device .menu-section h2{font-size:72px}
+.mobile-device .menu-row{grid-template-columns:30px 1fr auto;gap:10px}
+.mobile-device .menu-row strong{font-size:27px}
+.mobile-device .plating{grid-template-columns:1fr;min-height:auto}
+.mobile-device .plating img{height:auto;aspect-ratio:4/5;min-height:0}
+.mobile-device .plating-copy{padding:70px 22px 85px}
+.mobile-device .plating-copy h2{font-size:72px}
+.mobile-device .quote{padding:100px 22px}
+.mobile-device .quote h2{font-size:76px}
+.mobile-device .gallery{padding:70px 0 85px}
+.mobile-device .gallery-title{padding:0 22px 28px}
+.mobile-device .track{padding-left:22px}
+.mobile-device .card{width:78vw}
+.mobile-device .order{padding:85px 22px}
+.mobile-device .order h2{font-size:78px}
+.mobile-device footer{padding:60px 22px 25px;grid-template-columns:1fr}
+.mobile-device .footer-links{flex-wrap:wrap}
 
 @media(max-width:900px){
  .site-header{height:68px;padding:0 18px}.brand{width:48px;height:48px}.nav{display:none}.menu-btn{display:block}
@@ -285,6 +336,14 @@ footer p{color:rgba(242,231,211,.5);font-size:12px}
 </footer>
 
 <script>
+// Android Chrome can emulate a desktop viewport. Detect a small physical screen so the
+// mobile layout still applies even when "Desktop site" is enabled.
+(function(){
+  const smallScreen = Math.min(window.screen.width || 9999, window.screen.height || 9999) <= 600;
+  const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  if (smallScreen && coarse) document.body.classList.add('mobile-device');
+})();
+
 const btn=document.getElementById('menuBtn'), nav=document.getElementById('mobileNav');
 btn.addEventListener('click',()=>nav.classList.toggle('open'));
 nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
